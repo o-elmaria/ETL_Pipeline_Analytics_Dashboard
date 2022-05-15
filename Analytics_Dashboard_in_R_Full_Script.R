@@ -95,7 +95,7 @@ order_status_en <- c("Cancelled", "Delivered", "Delivery_Rejected", "Replacement
 ## Step 2.9: 
 final_col_order <- c("record_id", "Base_Num", "Order_Number", "Order_Items", "Order_Date", "Delivery_Date", "Vendor", "Product_Name", "Category", "Sub-category", "Payment_Method",
                      "Order_Status", "Complaint", "Cancellation_Reason", "Shipping_Party", "Route",
-                     "Product_RetailPrice", "Price_point_interval", "Ship_Rev_Non_Dist", "Ship_Rev_Dist", "Tot_GMV_Incl_Ship_Old", "Tot_GMV_Incl_Ship_Calc", 
+                     "Product_RetailPrice", "Price_point_interval", "Sorting_col_price_point_interval", "Ship_Rev_Non_Dist", "Ship_Rev_Dist", "Tot_GMV_Incl_Ship_Old", "Tot_GMV_Incl_Ship_Calc", 
                      "Commission_Rate", "Commission_Rev", "Tot_Rev_Incl_Ship", "Promo Code", "Discount_Value", "Last Modified")
 
 ##--------------------------------------------------END OF STEP 2 AND INPUT SECTION (NO MORE INPUTS NEEDED)--------------------------------------------------##
@@ -241,6 +241,14 @@ df_clean[grepl("cod", df_clean$Payment_Method, ignore.case = TRUE), "Payment_Met
 ## Step 3.6: Add a price point interval column to df_clean
 df_clean <- df_clean %>% 
   mutate(Price_point_interval = cut(Product_RetailPrice, breaks = seq(0, 50000, 1000), right = TRUE, ordered_result = TRUE, dig.lab = 10))
+
+## Step 3.7.1: Add a new column to sort the ordered factors under the "Price_point_interval" column correctly. Otherwise (10000, 11000] comes before (2000, 3000]
+df_temp <- data.frame(Price_point_interval = levels(df_clean$Price_point_interval),
+                      Sorting_col_price_point_interval = as.numeric(factor(levels(df_clean$Price_point_interval), ordered = TRUE, levels = levels(df_clean$Price_point_interval))))
+
+### Step 3.7.2: Join "df_temp" to "df_clean"
+df_clean <- df_clean %>% 
+  left_join(df_temp, by = c("Price_point_interval"))
 
 ##-----------------------------------------------------------------------END OF STEP 3.4-----------------------------------------------------------------------##
 
@@ -435,7 +443,7 @@ for (i in 1:length(exported_data_sheet_names)) {
 
 # Step 7: Send an email to the relevant users telling them that the update was finished
 sendmail(from = "<omar.elmaria@kemitt.com>", 
-         to = c("<omar.elmaria@kemitt.com>", "<mahmoud@kemitt.com>", "<hedayat@kemitt.com>", "<rashwan@kemitt.com>"), 
+         to = c("<omar.elmaria@kemitt.com>", "<mahmoud@kemitt.com>", "<hedayat@kemitt.com>", "<rashwan@kemitt.com>", "<business@kemitt.com>", "<a.bediwy@kemitt.com>"), 
          subject = paste0("Daily Automatic Data Refresh - ", Sys.time()), 
          msg = "The analytics dashboard is now fed with the most up-to-date data",
          control = list(smtpServer = "ASPMX.L.GOOGLE.COM"))
