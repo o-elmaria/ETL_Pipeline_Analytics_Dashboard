@@ -39,6 +39,8 @@ pacman::p_load(dplyr, # A package for data manipulation using data frames
                gargle, # A package for google email authentication tokens
                plyr, # A package that allows rbind and cbind operations with NA filling among other things
                stringr, # A package that performs regex operations
+               sendmailR, # A package for sending emails
+               keyringr, # A package for de-crypting passwords. Used for the API key of Airtable
                FedData) # A package to do some string manipulation (e.g., get the rightmost 'n' characters of a character string) among other things
 
 ##-----------------------------------------------------------------------END OF STEP 1-----------------------------------------------------------------------##
@@ -49,12 +51,16 @@ pacman::p_load(dplyr, # A package for data manipulation using data frames
 start_date <- as.Date("2021-09-06")
 end_date <- Sys.Date() # Today's date
 
-## Step 2.2: Specify the API key and base IDs for pulling data from Airtable through the API. Refer to the API documentation for more details
+## Step 2.2.1: Specify the base IDs for pulling data from Airtable through the API. Refer to the API documentation for more details
 op2_base_id <- "appgdUO4BR84dv5Rv" # The ID of the "op 2" base
 op3_base_id <- "appwDydCb32yYQze0" # The ID of the "op 3" base
 op4_base_id <- "appuHAre2011Hqdmh" # The ID of the "op 4" base
-api_id <- "keymNRLHUvSsIDKfH" # Every account has an API key which has access to all the data in the Airtable bases, so exercise caution when sharing it with 3rd party services 
 main_table_name <- "Kemitt Dashboard" # The main table where the data lives
+
+### Step 2.2.2: Extract the encrypted API key of Airtable and de-crypt it. # Every account has an API key which has access to all the data in the Airtable bases, so exercise caution when sharing it with 3rd party services
+credential_label <- "Airtable_API_Key"
+credential_path <- paste('C:\\DPAPI\\passwords\\', Sys.info()["nodename"], '\\', credential_label, '.txt', sep="")
+api_id <- decrypt_dpapi_pw(credential_path)
 
 ## Step 2.3: Specify the user's email and set the encoding + Google's authentication token
 user_email <- "omar.elmaria@kemitt.com"
@@ -424,3 +430,12 @@ df_for_export <- sort(all_df_names[grep("_final|_clean", all_df_names)]) # Extra
 for (i in 1:length(exported_data_sheet_names)) {
   export_func(eval(parse(text = df_for_export[i])), exported_data_sheet_id, exported_data_sheet_names[i])
 }
+
+##-----------------------------------------------------------------------END OF STEP 6-----------------------------------------------------------------------##
+
+# Step 7: Send an email to the relevant users telling them that the update was finished
+sendmail(from = "<omar.elmaria@kemitt.com>", 
+         to = c("<omar.elmaria@kemitt.com>", "<mahmoud@kemitt.com>", "<hedayat@kemitt.com>", "<rashwan@kemitt.com>"), 
+         subject = paste0("Daily Automatic Data Refresh - ", Sys.time()), 
+         msg = "The analytics dashboard is now fed with the most up-to-date data",
+         control = list(smtpServer = "ASPMX.L.GOOGLE.COM"))

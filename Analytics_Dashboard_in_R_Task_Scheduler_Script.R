@@ -1,2 +1,2 @@
 # Adjust the encoding of the actual script to UTF-8 so that it can handle Arabic characters
-eval(parse("I:\\My Drive\\Consulting\\Analytics_Infrastructure\\Automated_Script_without_Charts_Final\\Kemitt_Analytics_Dashboard_in_R_Full_Script.R", encoding = "UTF-8"))
+eval(parse("I:\\My Drive\\Consulting\\Analytics_Infrastructure\\ETL_Pipeline_Analytics_Dashboard\\Analytics_Dashboard_in_R_Full_Script.R", encoding = "UTF-8"))
