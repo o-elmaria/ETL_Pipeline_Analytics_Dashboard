@@ -440,23 +440,3 @@ for (i in 1:length(exported_data_sheet_names)) {
 }
 
 ##-----------------------------------------------------------------------END OF STEP 6-----------------------------------------------------------------------##
-
-# Step 7: Send an email to the relevant users telling them that the update was finished
-
-## Option 1: Via the "sendmailR" package (NOT receommended because it gets blocked after some time)
-# sendmail(from = "<omar.elmaria@kemitt.com>", 
-#          to = c("<omar.elmaria@kemitt.com>", "<mahmoud@kemitt.com>", "<hedayat@kemitt.com>", "<rashwan@kemitt.com>", "<business@kemitt.com>", "<a.bediwy@kemitt.com>"), 
-#          subject = paste0("Daily Automatic Data Refresh - ", Sys.time()), 
-#          msg = "The analytics dashboard is now fed with the most up-to-date data",
-#          control = list(smtpServer = "ASPMX.L.GOOGLE.COM"))
-
-## Option 2: Via the "gmailr" package (Preferred method because it uses the Google API) 
-email <-
-  gm_mime() %>%
-  gm_to(c("omar.elmaria@kemitt.com", "mahmoud@kemitt.com", "hedayat@kemitt.com", "rashwan@kemitt.com", "business@kemitt.com", "a.bediwy@kemitt.com")) %>%
-  gm_from("omar.elmaria@kemitt.com") %>%
-  gm_subject(paste0("Daily Automatic Data Refresh - ", Sys.time())) %>%
-  gm_text_body("The analytics dashboard is now fed with the most up-to-date data")
-
-# If all is good with your draft, then you can send it
-gm_send_message(email)
