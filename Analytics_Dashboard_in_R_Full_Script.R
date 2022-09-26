@@ -28,7 +28,8 @@ if (system.file(package = "pacman") == "") {
 
 pacman::p_load(dplyr, # A package for data manipulation using data frames 
                ggplot2, # A package for plotting graphs
-               rtable, # A package for connecting R to Airtable
+               BiocManager, # A necessary package to be able to install rtable
+               rtable, # A package for connecting R to Airtable. If this method of installing the package doesn't work due to the version of R, try remotes::install_github("JohnCoene/rtable")
                rlang,
                lubridate, # A package for date and time manipulation
                ggpubr, # A package for displaying descriptive statistics
@@ -41,7 +42,8 @@ pacman::p_load(dplyr, # A package for data manipulation using data frames
                stringr, # A package that performs regex operations
                gmailr, # A package for sending emails
                keyringr, # A package for de-crypting passwords. Used for the API key of Airtable
-               FedData) # A package to do some string manipulation (e.g., get the rightmost 'n' characters of a character string) among other things
+               FedData, # A package to do some string manipulation (e.g., get the rightmost 'n' characters of a character string) among other things
+               usethis) # A package for storing R environment variables
 
 ##-----------------------------------------------------------------------END OF STEP 1-----------------------------------------------------------------------##
 
@@ -111,9 +113,9 @@ load_data_from_airtable_func <- function(private_api_key, base_id, table_name) {
 }
 
 # ***FUNCTION CALLING***
-df_op2 <- load_data_from_airtable_func(private_api_key = api_id, base_id = op2_base_id, table_name = main_table_name)
-df_op3 <- load_data_from_airtable_func(private_api_key = api_id, base_id = op3_base_id, table_name = main_table_name)
-df_op4 <- load_data_from_airtable_func(private_api_key = api_id, base_id = op4_base_id, table_name = main_table_name)
+df_op2 <- load_data_from_airtable_func(private_api_key = Sys.getenv("RTABLE_API_KEY"), base_id = op2_base_id, table_name = main_table_name)
+df_op3 <- load_data_from_airtable_func(private_api_key = Sys.getenv("RTABLE_API_KEY"), base_id = op3_base_id, table_name = main_table_name)
+df_op4 <- load_data_from_airtable_func(private_api_key = Sys.getenv("RTABLE_API_KEY"), base_id = op4_base_id, table_name = main_table_name)
 
 # Add a column to each df_op(x) showing which base it comes from, then combine all data frames together
 vars_in_workspace <- str_extract(ls(), pattern = "df_op[0-9]")
