@@ -1,0 +1,8 @@
+.RData
+.Rhistory
+*.gsheet
+*.Rout
+*.ini
+Testing_and_QA/
+.secrets
+*.json
