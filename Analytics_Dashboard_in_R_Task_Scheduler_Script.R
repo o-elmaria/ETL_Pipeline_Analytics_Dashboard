@@ -1,5 +1,5 @@
 # Adjust the encoding of the actual script to UTF-8 so that it can handle Arabic characters
-eval(parse("I:\\My Drive\\Consulting\\Analytics_Infrastructure\\ETL_Pipeline_Analytics_Dashboard\\Analytics_Dashboard_in_R_Full_Script.R", encoding = "UTF-8"))
+eval(parse("J:\\My Drive\\Consulting\\Analytics_Infrastructure\\ETL_pipeline_analytics_dashboard_in_R\\Analytics_Dashboard_in_R_Full_Script.R", encoding = "UTF-8"))
 
 # Step 2: Send an email to the relevant users telling them that the update was finished
 ## Load the gmailr package
@@ -12,7 +12,7 @@ pacman::p_load(gmailr)
 # Set the authentication parameters
 user_email <- "omar.elmaria@kemitt.com"
 options(encoding = "UTF-8", gargle_oauth_email = user_email, httr_oob_default = TRUE)
-path_to_email_oauth_token <- "I:\\My Drive\\Consulting\\Analytics_Infrastructure\\ETL_Pipeline_Analytics_Dashboard\\R Email.json"
+path_to_email_oauth_token <- "J:\\My Drive\\Consulting\\Analytics_Infrastructure\\ETL_pipeline_analytics_dashboard_in_R\\R Email.json"
 
 ## Option 1: Via the "sendmailR" package (NOT receommended because it gets blocked after some time)
 # sendmail(from = "<omar.elmaria@kemitt.com>", 
